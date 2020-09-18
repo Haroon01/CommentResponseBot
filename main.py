@@ -13,6 +13,8 @@ reddit = praw.Reddit(client_id=config.get("ACCOUNT", "CLIENT_ID"),
                      password=config.get("ACCOUNT", "PASSWORD"),
                      user_agent="ItsTheRedditPolice")
 
+name = reddit.user.me()
+
 
 keywords = ["piers", "morgan"]
 
@@ -28,7 +30,6 @@ def wait(seconds):
 
 
 def initialise():
-    name = reddit.user.me()
     if name is None:
         print(f"** Error: Not logged in!")
         wait(1)
@@ -60,21 +61,25 @@ def load_db():
 
 def scan_comments():
     for comment in reddit.subreddit(sub).stream.comments(skip_existing=True):
-        text = comment.body
-        lst_text = text.split()
-        author = comment.author
-        response = random.choice(sillyComments)
-        print(text)
-        for word in keywords:
-            match = lst_text.count(word)
-            if match == 1:
-                comment.reply(response)
-                print(f"** Replied '{response}' to u/{author}")
-                break
-            else:
-                print("no match")
-                break
-        wait(1)
+        try:
+            author = comment.author
+            if author != name:
+                text = comment.body
+                lst_text = text.split()
+                response = random.choice(sillyComments)
+                print(text)
+                for word in keywords:
+                    match = lst_text.count(word)
+                    if match == 1:
+                        comment.reply(response)
+                        print(f"** Replied '{response}' to u/{author}")
+                        break
+                    else:
+                        print("no match")
+                        break
+            wait(1)
+        except praw.exceptions.RedditAPIException:
+            print("** Error: The bot is being rate limited! This is probably due to low karma. Try gaining some karma points on the bot account.")
 
 
 
