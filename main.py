@@ -11,7 +11,7 @@ reddit = praw.Reddit(client_id=config.get("ACCOUNT", "CLIENT_ID"),
                      client_secret=config.get("ACCOUNT", "CLIENT_SECRET"),
                      username=config.get("ACCOUNT", "USERNAME"),
                      password=config.get("ACCOUNT", "PASSWORD"),
-                     user_agent="ItsTheRedditPolice")
+                     user_agent="Created by u/ItsTheRedditPolice")
 
 name = reddit.user.me()
 
