@@ -67,19 +67,15 @@ def scan_comments():
                 text = comment.body
                 lst_text = text.split()
                 response = random.choice(sillyComments)
-                print(text)
                 for word in keywords:
                     match = lst_text.count(word)
                     if match == 1:
                         comment.reply(response)
-                        print(f"** Replied '{response}' to u/{author}")
-                        break
-                    else:
-                        print("no match")
+                        print(f"** Comment sent to u/{author}\n")
                         break
             wait(1)
-        except praw.exceptions.RedditAPIException:
-            print("** Error: The bot is being rate limited! This is probably due to low karma. Try gaining some karma points on the bot account.")
+        except praw.exceptions.RedditAPIException as e:
+            print(f"** Failed to send a comment. ({e})\n")
 
 
 
